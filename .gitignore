@@ -1,0 +1,14 @@
+# Ignore Python virtual environment
+venv/
+
+# Ignore environment variables
+.env
+
+# Bytecode files
+__pycache__/
+*.pyc
+
+# macOS or IDE-specific (optional)
+.DS_Store
+.idea/
+.vscode/
