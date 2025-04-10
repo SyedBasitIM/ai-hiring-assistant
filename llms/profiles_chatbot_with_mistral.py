@@ -25,30 +25,29 @@ class ProfileChatbot:
 
         profiles = list(collection.find({}, {"_id": 0, "profileImage": 0, "seoImage": 0}))
         print(f'total profiles fetch: {len(profiles)}')
-        # ==============
+
+        profile_string = self.format_profiles_as_string(profiles)
+        self.conversation_history.append({
+            "role": "system",
+            "content": profile_string
+        })
+        # print(f'Profiles: {len(profiles)}')
+
+    def format_profiles_as_string(self, profiles):
         large_string = ""
         for profile in profiles:
-            # Create a string representation of the profile, excluding specified fields
             profile_str = "Profile: "
             profile_str += f"Name: {profile.get('firstName', 'N/A')} {profile.get('lastName', 'N/A')} |"
             profile_str += f"Area of expertise: {profile.get('areaOfExpertise', 'N/A')} |"
             profile_str += f"Current Location: {profile.get('currentLocation', 'N/A')} |"
-            # profile_str += f"Email: {profile.get('email', 'N/A')}\n"
-
-            # Add certifications
-            # if "certifications" in profile and profile["certifications"]:
-            #     profile_str += "Certifications:\n"
-            #     for cert in profile["certifications"]:
-            #         profile_str += f"  - Name: {cert.get('name', 'N/A')}, Institute: {cert.get('institute', 'N/A')}, "
-            #         profile_str += f"Date: {cert.get('certificationDate', 'N/A')}\n"
 
             # Add education
-            # if "education" in profile and profile["education"]:
-            #     profile_str += "Education:\n"
-            #     for edu in profile["education"]:
-            #         profile_str += f"  - Degree: {edu.get('degree', 'N/A')}, Field: {edu.get('fieldOfStudy', 'N/A')}, "
-            #         profile_str += f"Institute: {edu.get('institute', 'N/A')}, Start: {edu.get('startDate', 'N/A')}, "
-            #         profile_str += f"End: {edu.get('endDate', 'N/A')}\n"
+            if "education" in profile and profile["education"]:
+                profile_str += "Education:\n"
+                for edu in profile["education"]:
+                    profile_str += f"  - Degree: {edu.get('degree', 'N/A')}, Field: {edu.get('fieldOfStudy', 'N/A')}, "
+                    profile_str += f"Institute: {edu.get('institute', 'N/A')}, Start: {edu.get('startDate', 'N/A')}, "
+                    profile_str += f"End: {edu.get('endDate', 'N/A')}\n"
 
             # Add experience
             if "experience" in profile and profile["experience"]:
@@ -66,19 +65,15 @@ class ProfileChatbot:
                         for proj in exp["projects"]:
                             profile_str += f"      - {proj}\n"
 
-            # Add current location
+            # Add current location again in full detail
             if "currentLocation" in profile and profile["currentLocation"]:
                 loc = profile["currentLocation"]
                 profile_str += f"Location: {loc.get('city', 'N/A')}, {loc.get('state', 'N/A')}, {loc.get('country', 'N/A')}\n"
 
-            profile_str += "\n"  # Separator between profiles
+            profile_str += "\n"  # Separator
             large_string += profile_str
-            # ==============
-        self.conversation_history.append({
-                "role": "system",
-                "content": large_string
-            })
-        # print(f'Profiles: {len(profiles)}')
+
+        return large_string
 
     def run(self):
         while True:
@@ -94,12 +89,23 @@ class ProfileChatbot:
         self.conversation_history.append(user_message)
 
     def send_user_prompt_request(self):
-        response = self.client.chat.stream(
+
+        buffer = ""
+        stream_response = self.client.chat.stream(
             model=self.model,
             messages=self.conversation_history
         )
-        for chunk in response:
-            print(chunk.data.choices[0].delta.content, end="")
+        for chunk in stream_response:
+            content_part = chunk.data.choices[0].delta.content
+            if content_part:
+                buffer += content_part
+                print(content_part, end="", flush=True)
+
+        assistant_message = {
+            "role": "assistant",
+            "content": buffer
+        }
+        self.conversation_history.append(assistant_message)
 
     def initialize_profile_context(self):
         # print("fetching start")
