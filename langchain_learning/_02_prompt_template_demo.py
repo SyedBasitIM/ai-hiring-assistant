@@ -28,7 +28,6 @@ if __name__ == '__main__':
     )
 
     prompt = prompt_template.invoke(
-        # Uncomment:
         {"language": {user_selected_language}, "text": {user_text}}
     )
 
