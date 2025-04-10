@@ -28,9 +28,16 @@ if __name__ == '__main__':
     )
 
     prompt = prompt_template.invoke(
+        # Uncomment:
         {"language": {user_selected_language}, "text": {user_text}}
     )
 
     response = model.invoke(prompt)
     print(response.content)
 
+    # Uncomment: We can see that it returns a ChatPromptValue that consists of two messages.
+    # print(prompt)
+    # Uncomment: If I want to access the messages directly we do:
+    # print(prompt.to_messages())
+
+    # Todo: streaming response
