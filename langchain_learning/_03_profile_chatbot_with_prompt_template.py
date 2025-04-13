@@ -22,7 +22,7 @@ class ProfileChatbot:
         )
         # Fetch profiles
         self.profile_manager = ProfileManager()
-        self.profiles_data = self.profile_manager.get_profile_as_formatted_large_str()
+        self.profiles_data = self.profile_manager.get_profiles_as_formatted_large_str()
 
     def get_prompt(self, user_query):
         return self.prompt_template.invoke({"profiles": self.profiles_data, "user_query": user_query})

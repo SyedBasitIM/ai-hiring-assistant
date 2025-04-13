@@ -60,7 +60,7 @@ class ProfileManager:
         return profiles
         # print(f'total profiles fetch: {len(profiles)}')
 
-    def get_profile_as_formatted_large_str(self):
+    def get_profiles_as_formatted_large_str(self):
         profiles = self.get_profiles()
         return format_profiles_as_string(profiles)
 
