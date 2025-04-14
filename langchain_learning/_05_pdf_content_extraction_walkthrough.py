@@ -12,13 +12,19 @@ if __name__ == "__main__":
         try:
             loader = PyPDFLoader(file_path)
             docs = loader.load()
-            print(f"Number of documents loaded: {len(docs)}") # len(docs) will count the number of documents or pages in the loaded pdf/file.
-            print(docs) # This will print the list of Document object basically Document(page_content, metadata={dictionary})
-            print(docs[0]) # This will print the page_content and metadata of first page
+
+            # UNCOMMENT: len(docs) will count the number of documents or pages in the loaded pdf/file.
+            print(f"Number of documents loaded: {len(docs)}")
+
+            # UNCOMMENT: This will print list of Document object basically Document(page_content, metadata={dictionary})
+            # print(docs)
+            # print(docs[0]) # This will print the page_content and metadata of first page
         except Exception as e:
             print(f"An error occurred: {e}")
 
     # print(f"{docs[0].page_content[:200]}\n") # This will print the first 200 characters of the first page
     # print(f"{docs[0].page_content[0:]}\n") # This will print the characters till the end from the 0th index
-    # print(f"{docs[0].page_content}\n") # This will print all the content of first page
+    print(f"{docs[0].page_content}\n") # This will print all the content of first page
     # print(docs[2].page_content) # This will print all the content of 3 page if exits else index out of range error occur
+
+    print(docs[0].metadata) # this will print the metadata of the file
