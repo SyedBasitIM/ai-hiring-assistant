@@ -5,3 +5,4 @@ langchain~=0.3.20
 langchain-core~=0.3.45
 langchain-community~= 0.3.21
 pypdf~=5.4.0
+faiss-cpu~=1.10.0
